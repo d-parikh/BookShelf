@@ -57,6 +57,6 @@ class BookViewSet(ViewSet):
 
     def destroy(self, request, pk=None):
         queryset = Book.objects.all()
-        trip = get_object_or_404(queryset, pk=pk)
-        trip.delete()
+        book = get_object_or_404(queryset, pk=pk)
+        book.delete()
         return Response({"message": "Book deleted successfully"}, status=HTTP_204_NO_CONTENT)
