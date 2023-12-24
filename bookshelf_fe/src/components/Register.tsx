@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Formik, Field, Form } from "formik";
 import { Form as BootstrapForm, Button, Alert, Toast } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { registerUser } from "../services/UserApi";
+import { registerUser } from "../app/services/UserApi";
 
 interface LoginFormValues {
   username: string;
