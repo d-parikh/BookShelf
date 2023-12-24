@@ -16,14 +16,15 @@ const BooksList: React.FC = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [alertMessage, setAlertMessage] = useState(false);
 
   const [books, setBooks] = useState<Book[] | undefined>();
 
   useEffect(() => {
     GetBooksList()
       .then((response) => {
-        console.log("api response***", response.data.data);
-        setBooks(response.data.data);
+        console.log("api response***", response?.data?.data);
+        setBooks(response?.data?.data);
       })
       .catch((error) => {
         console.log("api error***", error);
@@ -48,11 +49,8 @@ const BooksList: React.FC = () => {
           books.map((item, index) => (
             <BookCard
               id={item.id}
-              key={index}
-              title={item.title}
-              author={item.author}
-              publicationYear={item.publication_year}
-              genre={item.genre}
+              books={item}
+              setBooks={setBooks}
             />
           ))}
       </Row>

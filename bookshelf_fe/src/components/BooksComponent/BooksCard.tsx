@@ -4,30 +4,38 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Button, Container } from "react-bootstrap";
 import EditBookModal from "./EditBookModal";
+import { DeleteBook } from "../../app/services/BooksApi";
 
 interface Book {
   id: number;
-  key: number;
-  title: string;
-  author: string;
-  publicationYear: number;
-  genre: string;
+    books?: any; 
+    setBooks?: any; 
+    key?: number; 
 }
 
 interface BookCardProps extends Book {}
 
 const BookCard: React.FC<BookCardProps> = ({
   id,
+  books,
+  setBooks,
   key,
-  title,
-  author,
-  publicationYear,
-  genre,
 }) => {
-  const [books, setBooks] = useState<Book | false>(false);
+
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const handleDeleteBook = () => {
+    DeleteBook(id)
+    .then((response) => {
+      console.log("api response***", response.data.data);
+      setBooks(response.data.data);
+    })
+    .catch((error) => {
+      console.log("api error***", error);
+    });
+  }
 
   return (
     <>
@@ -36,10 +44,10 @@ const BookCard: React.FC<BookCardProps> = ({
           <Container>
             <Row>
               <Col xs={5} className="d-flex justify-content-left">
-                <h6>{title}</h6>
+                <h6>{books.title}</h6>
               </Col>
-              <Col xs={6} className="d-flex justify-content-left">
-                <p style={{ color: "#b4becf" }}>{genre}</p>
+              <Col xs={5} className="d-flex justify-content-left">
+                <p style={{ color: "#b4becf" }}>{books.genre}</p>
               </Col>
               <Col>
                 <div className="d-flex justify-content-end mr-3">
@@ -55,11 +63,19 @@ const BookCard: React.FC<BookCardProps> = ({
                   handleShow={handleShow}
                 />
               </Col>
+              <Col>
+                <div className="d-flex justify-content-end mr-3">
+                  <Button variant="primary" onClick={handleDeleteBook}>
+                    Delete
+                  </Button>
+                </div>
+              </Col>
+
             </Row>
             <Row>
               <Col className="d-flex justify-content-left">
-                <p style={{ color: "#b4becf" }}>{author}</p>
-                <p>, {publicationYear}</p>
+                <p style={{ color: "#b4becf" }}>{books.author}</p>
+                <p>, {books.publication_year}</p>
               </Col>
             </Row>
           </Container>

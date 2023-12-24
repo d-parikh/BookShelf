@@ -36,3 +36,12 @@ export const EditBook = async (id: number, data: FormData): Promise<AxiosRespons
     throw error; // You can handle errors in the component using .catch
   }
 };
+
+export const DeleteBook = async (id: number): Promise<AxiosResponse> => {
+  try {
+    const response = await axios.delete(`http://127.0.0.1:8000/api/books/${id}/`);
+    return response;
+  } catch (error) {
+    throw error; // You can handle errors in the component using .catch
+  }
+};
