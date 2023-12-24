@@ -1,5 +1,6 @@
 import './App.css';
 import Login from './components/Login';
+import Register from './components/Register';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 // import { addNumbers } from './components/Login';
 
@@ -12,6 +13,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route exact path="/login" element={<Login/>} />
+          <Route exact path="/register" element={<Register/>} />
         </Routes>
       </BrowserRouter>
 
