@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     #...
     'AuthUser',
+    'Books',
     'rest_framework',
     'rest_framework.authtoken',
 ]
