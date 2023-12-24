@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import Card from 'react-bootstrap/Card';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { Button, Container } from 'react-bootstrap';
+import React, { useEffect, useState } from "react";
+import Card from "react-bootstrap/Card";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import { Button, Container } from "react-bootstrap";
+import EditBookModal from "./EditBookModal";
 
 interface Book {
   id: number;
@@ -13,15 +14,24 @@ interface Book {
   genre: string;
 }
 
-interface BookCardProps extends Book {
-}
+interface BookCardProps extends Book {}
 
-const BookCard: React.FC<BookCardProps> = ({ id, key, title, author, publicationYear, genre }) => {
+const BookCard: React.FC<BookCardProps> = ({
+  id,
+  key,
+  title,
+  author,
+  publicationYear,
+  genre,
+}) => {
   const [books, setBooks] = useState<Book | false>(false);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   return (
     <>
-      <Card key={key} className='mx-5 my-4'>
+      <Card key={key} className="mx-5 my-4">
         <Card.Body className="d-flex justify-content-left">
           <Container>
             <Row>
@@ -30,6 +40,20 @@ const BookCard: React.FC<BookCardProps> = ({ id, key, title, author, publication
               </Col>
               <Col xs={6} className="d-flex justify-content-left">
                 <p style={{ color: "#b4becf" }}>{genre}</p>
+              </Col>
+              <Col>
+                <div className="d-flex justify-content-end mr-3">
+                  <Button variant="primary" onClick={handleShow}>
+                    Edit
+                  </Button>
+                </div>
+                <EditBookModal
+                  id={id}
+                //   books={books}
+                  show={show}
+                  handleClose={handleClose}
+                  handleShow={handleShow}
+                />
               </Col>
             </Row>
             <Row>

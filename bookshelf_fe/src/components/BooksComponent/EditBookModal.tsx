@@ -1,58 +1,57 @@
-import React, { useState } from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
-import { Alert } from 'react-bootstrap';
-import { AddBook } from '../../app/services/BooksApi';
+import React, { useEffect, useState } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import Form from "react-bootstrap/Form";
+import { Alert } from "react-bootstrap";
+import { EditBook, GetBook } from "../../app/services/BooksApi";
 
-interface AddBookModalProps {
+interface EditBookModalProps {
+  id: number;
   show: boolean;
   handleClose: () => void;
   handleShow: () => void;
 }
 
-const AddBookModal: React.FC<AddBookModalProps> = ({ show, handleClose, handleShow }) => {
-  const [error, setError] = useState<string | null>(null);
+const EditBookModal: React.FC<EditBookModalProps> = ({ id, show, handleClose, handleShow }) => {
+  const [books, setBooks] = useState<any>(false);
+  const [error, setError] = useState<string | boolean>(false);
 
   const initialValues = {
-    title: '',
-    author: '',
-    publication_year: '',
-    genre: '',
+    title: "",
+    author: "",
+    publication_year: "",
+    genre: "",
   };
 
   const validationSchema = Yup.object({
-    title: Yup.string().required('This is Required'),
-    author: Yup.string().required('This is Required'),
-    publication_year: Yup.string().required('This is Required'),
+    title: Yup.string().required("This is Required"),
+    author: Yup.string().required("This is Required"),
+    publication_year: Yup.string().required("This is Required"),
     genre: Yup.string(),
   });
 
-  const onSubmit = async (values: typeof initialValues, { setStatus, resetForm }: any) => {
-    console.log("add modal values", values);
+  const onSubmit = (values: typeof initialValues, { setStatus, resetForm }: any) => {
     const formData = new FormData();
     formData.append("title", values?.title);
     formData.append("author", values?.author);
     formData.append("publication_year", values?.publication_year);
     formData.append("genre", values?.genre);
-
-    AddBook(formData)
-    .then((response) => {
-      console.log("api response***", response?.data?.message);
-      setStatus({ success: true });
-      localStorage.setItem("userToken", response?.data?.token);
-      setTimeout(() => {
+    EditBook(id, formData)
+      .then((response) => {
+        console.log("API response:", response.data.data);
+        setStatus({ success: true });
+        setTimeout(() => {
           resetForm();
           handleClose();
         }, 3000);
-    })
-    .catch((error) => {
-      console.log("api error***", error?.response?.data);
-      setError(error?.response?.data?.message);
-      setStatus({ success: false });
-    });
+      })
+      .catch((error) => {
+        console.log("API error:", error.response?.data?.message);
+        setError(error.response?.data?.message || true);
+        setStatus({ success: false });
+      });
   };
 
   const formik = useFormik({
@@ -61,18 +60,34 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ show, handleClose, handleSh
     onSubmit,
   });
 
-  const { values, handleChange, handleSubmit, errors, touched } = formik;
+  const { values, setValues, handleChange, handleSubmit, errors, touched } = formik;
+
+  useEffect(() => {
+    if (show) {
+      GetBook(id).then((response) => {
+        setBooks(response.data.data[0]);
+        setValues({
+          title: response.data.data[0].title,
+          author: response.data.data[0].author,
+          publication_year: response.data.data[0].publication_year,
+          genre: response.data.data[0].genre,
+        });
+
+        console.log("****", response);
+      });
+    }
+  }, [show, id]);
 
   return (
     <>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton className="border-width-0 pb-0">
-          <h3>Add Book</h3>
+          <h3>Edit Book Details</h3>
         </Modal.Header>
         <Modal.Body>
           {formik.status && formik.status.success ? (
             <Alert variant="success" className="py-2">
-              Book added successfully!
+              Book updated successfully!
             </Alert>
           ) : formik.status && !formik.status.success ? (
             <Alert variant="danger" className="py-2">
@@ -116,7 +131,9 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ show, handleClose, handleSh
                 name="publication_year"
                 value={values.publication_year}
                 onChange={handleChange}
-                isInvalid={touched.publication_year && !!errors.publication_year}
+                isInvalid={
+                  touched.publication_year && !!errors.publication_year
+                }
               />
               <Form.Control.Feedback type="invalid">
                 {errors.publication_year}
@@ -137,7 +154,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ show, handleClose, handleSh
               </Form.Control.Feedback>
             </Form.Group>
             <Button variant="primary" type="submit">
-              Add Book
+              Update Book
             </Button>
           </Form>
         </Modal.Body>
@@ -146,4 +163,4 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ show, handleClose, handleSh
   );
 };
 
-export default AddBookModal;
+export default EditBookModal;
