@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Pagination, Row } from "react-bootstrap";
-import { GetBooksList } from "../app/services/BooksApi";
+import { Button, Col, Dropdown, Pagination, Row } from "react-bootstrap";
+import { GetBooksList, GetSortedBookList } from "../app/services/BooksApi";
 import BookCard from "./BooksComponent/BooksCard";
 import AddBookModal from "./BooksComponent/AddBookModal";
 
@@ -19,6 +19,17 @@ const BooksList: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState(false);
 
   const [books, setBooks] = useState<Book[] | undefined>();
+  const handleSortBy = (sortby: string) =>{
+    console.log("sortby", sortby)
+    GetSortedBookList(sortby)
+    .then((response) => {
+      console.log("api response***", response?.data?.data);
+      setBooks(response?.data?.data);
+    })
+    .catch((error) => {
+      console.log("api error***", error);
+    });
+  }
 
   useEffect(() => {
     GetBooksList()
@@ -38,12 +49,22 @@ const BooksList: React.FC = () => {
         <Button variant="primary" onClick={handleShow}>
           Add Book
         </Button>
+        <AddBookModal
+          show={show}
+          handleClose={handleClose}
+          handleShow={handleShow}
+        />
+        <Dropdown>
+          <Dropdown.Toggle variant="success" id="dropdown-basic">
+            Sort By
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={() => handleSortBy('publication_year')}>Publication Year</Dropdown.Item>
+            <Dropdown.Item onClick={() => handleSortBy('latest')}>Get the Latest books</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
       </div>
-      <AddBookModal
-        show={show}
-        handleClose={handleClose}
-        handleShow={handleShow}
-      />
+
       <Row>
         {books &&
           books.map((item, index) => (

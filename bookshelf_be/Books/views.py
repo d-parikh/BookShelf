@@ -25,7 +25,14 @@ class BookViewSet(ViewSet):
         A simple view set for CRUD Announcements
     """
     def list(self, request):
+        sort_by = request.query_params.get('sortby')
+
         queryset = Book.objects.all()
+        print("queryset***", queryset)
+
+        if sort_by == 'publication_year':
+            queryset = queryset.order_by('publication_year')
+
         serializer = BookSerializer(queryset, many=True)
         return Response({"data": serializer.data}, status=HTTP_200_OK)
     

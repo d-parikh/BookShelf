@@ -45,3 +45,18 @@ export const DeleteBook = async (id: number): Promise<AxiosResponse> => {
     throw error; // You can handle errors in the component using .catch
   }
 };
+
+
+export const GetSortedBookList = async (sortby?: string): Promise<AxiosResponse> => {
+  try {
+    const response = await axios.get('http://127.0.0.1:8000/api/books/', {
+      params: {
+        sortby: sortby, // Optional parameter for sorting
+      },
+    });
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
