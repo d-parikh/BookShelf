@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     #...
     'AuthUser',
     'Books',
+    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
 ]
@@ -53,6 +54,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    #....
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'bookshelf_be.urls'
@@ -140,3 +144,10 @@ REST_FRAMEWORK = {
     ],
     # Other settings...
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # or the origin of your frontend app
+]
+
+# Optional: Allow credentials (cookies, Authorization headers, etc.)
+CORS_ALLOW_CREDENTIALS = True
