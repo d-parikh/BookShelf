@@ -2,16 +2,21 @@ import React, { useEffect, useState } from "react";
 import { Button, Col, Pagination, Row } from "react-bootstrap";
 import { GetBooksList } from "../app/services/BooksApi";
 import BookCard from "./BooksComponent/BooksCard";
+import AddBookModal from "./BooksComponent/AddBookModal";
 
 interface Book {
   id: number;
   title: string;
   author: string;
-  publicationYear: number;
+  publication_year: number;
   genre: string;
 }
 
 const BooksList: React.FC = () => {
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   const [books, setBooks] = useState<Book[] | undefined>();
 
   useEffect(() => {
@@ -29,10 +34,15 @@ const BooksList: React.FC = () => {
     <>
       <h1>List of Books</h1>
       <div className="d-flex justify-content-end mr-3">
-        {/* <Button variant="primary" onClick={}>
+        <Button variant="primary" onClick={handleShow}>
           Add Book
-        </Button> */}
+        </Button>
       </div>
+      <AddBookModal
+        show={show}
+        handleClose={handleClose}
+        handleShow={handleShow}
+      />
       <Row>
         {books &&
           books.map((item, index) => (
@@ -41,7 +51,7 @@ const BooksList: React.FC = () => {
               key={index}
               title={item.title}
               author={item.author}
-              publicationYear={item.publicationYear}
+              publicationYear={item.publication_year}
               genre={item.genre}
             />
           ))}
