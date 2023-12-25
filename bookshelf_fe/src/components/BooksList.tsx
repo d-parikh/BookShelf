@@ -19,6 +19,15 @@ const BooksList: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState(false);
 
   const [books, setBooks] = useState<Book[] | undefined>();
+
+  const booksPerPage = 2; // Adjust the number of books per page as needed
+  const [currentPage, setCurrentPage] = useState(1);
+  const indexOfLastBook = currentPage * booksPerPage;
+  const indexOfFirstBook = indexOfLastBook - booksPerPage;
+  const currentBooks = books?.slice(indexOfFirstBook, indexOfLastBook);
+
+  const paginate = (pageNumber:number) => setCurrentPage(pageNumber);
+
   const handleSortBy = (sortby: string) =>{
     console.log("sortby", sortby)
     GetSortedBookList(sortby)
@@ -92,8 +101,8 @@ const BooksList: React.FC = () => {
       </div>
 
       <Row>
-        {books && books.length > 0 ? (
-          books.map((item, index) => (
+        {currentBooks && currentBooks.length > 0 ? (
+          currentBooks.map((item, index) => (
             <BookCard
               key={index}
               id={item.id}
@@ -106,6 +115,27 @@ const BooksList: React.FC = () => {
         )}
 
       </Row>
+
+      <Row>
+        <Col className="d-flex justify-content-end">
+        <Pagination>
+          {books &&
+          // @ts-ignore
+            [...Array(Math.ceil(books.length / booksPerPage)).keys()].map(
+              (number) => (
+                <Pagination.Item
+                  key={number + 1}
+                  active={number + 1 === currentPage}
+                  onClick={() => paginate(number + 1)}
+                >
+                  {number + 1}
+                </Pagination.Item>
+              )
+          )}
+      </Pagination>
+        </Col>
+      </Row>
+
     </>
   );
 };
