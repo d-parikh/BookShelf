@@ -11,9 +11,10 @@ interface AddBookModalProps {
   show: boolean;
   handleClose: () => void;
   handleShow: () => void;
+  setAlertMessage: any;
 }
 
-const AddBookModal: React.FC<AddBookModalProps> = ({ show, handleClose, handleShow }) => {
+const AddBookModal: React.FC<AddBookModalProps> = ({ setAlertMessage, show, handleClose, handleShow }) => {
   const [error, setError] = useState<string | null>(null);
 
   const initialValues = {
@@ -43,10 +44,9 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ show, handleClose, handleSh
       console.log("api response***", response?.data?.message);
       setStatus({ success: true });
       localStorage.setItem("userToken", response?.data?.token);
-      setTimeout(() => {
-          resetForm();
-          handleClose();
-        }, 3000);
+      setAlertMessage("Book added Successfully")
+      resetForm();
+      handleClose();
     })
     .catch((error) => {
       console.log("api error***", error?.response?.data);
@@ -70,11 +70,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ show, handleClose, handleSh
           <h3>Add Book</h3>
         </Modal.Header>
         <Modal.Body>
-          {formik.status && formik.status.success ? (
-            <Alert variant="success" className="py-2">
-              Book added successfully!
-            </Alert>
-          ) : formik.status && !formik.status.success ? (
+          {formik.status && !formik.status.success ? (
             <Alert variant="danger" className="py-2">
               {error}
             </Alert>

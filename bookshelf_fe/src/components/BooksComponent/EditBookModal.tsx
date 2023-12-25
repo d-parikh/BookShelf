@@ -12,9 +12,10 @@ interface EditBookModalProps {
   show: boolean;
   handleClose: () => void;
   handleShow: () => void;
+  setAlertMessage: any
 }
 
-const EditBookModal: React.FC<EditBookModalProps> = ({ id, show, handleClose, handleShow }) => {
+const EditBookModal: React.FC<EditBookModalProps> = ({ id, show, handleClose, handleShow, setAlertMessage }) => {
   const [books, setBooks] = useState<any>(false);
   const [error, setError] = useState<string | boolean>(false);
 
@@ -41,11 +42,9 @@ const EditBookModal: React.FC<EditBookModalProps> = ({ id, show, handleClose, ha
     EditBook(id, formData)
       .then((response) => {
         console.log("API response:", response.data.data);
-        setStatus({ success: true });
-        setTimeout(() => {
-          resetForm();
-          handleClose();
-        }, 3000);
+        setAlertMessage("Book edited successfully")
+        resetForm();
+        handleClose();
       })
       .catch((error) => {
         console.log("API error:", error.response?.data?.message);
@@ -85,11 +84,7 @@ const EditBookModal: React.FC<EditBookModalProps> = ({ id, show, handleClose, ha
           <h3>Edit Book Details</h3>
         </Modal.Header>
         <Modal.Body>
-          {formik.status && formik.status.success ? (
-            <Alert variant="success" className="py-2">
-              Book updated successfully!
-            </Alert>
-          ) : formik.status && !formik.status.success ? (
+          {formik.status && !formik.status.success ? (
             <Alert variant="danger" className="py-2">
               {error}
             </Alert>

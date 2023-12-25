@@ -11,6 +11,7 @@ interface Book {
     books?: any; 
     setBooks?: any; 
     key?: number; 
+    setAlertMessage: any
 }
 
 interface BookCardProps extends Book {}
@@ -20,6 +21,7 @@ const BookCard: React.FC<BookCardProps> = ({
   books,
   setBooks,
   key,
+  setAlertMessage
 }) => {
 
   const [show, setShow] = useState(false);
@@ -29,8 +31,9 @@ const BookCard: React.FC<BookCardProps> = ({
   const handleDeleteBook = () => {
     DeleteBook(id)
     .then((response) => {
-      console.log("api response***", response.data.data);
+      console.log("delete response***", response.data.data);
       setBooks(response.data.data);
+      setAlertMessage("Book Deleted Successfully")
     })
     .catch((error) => {
       console.log("api error***", error);
@@ -61,6 +64,7 @@ const BookCard: React.FC<BookCardProps> = ({
                   show={show}
                   handleClose={handleClose}
                   handleShow={handleShow}
+                  setAlertMessage={setAlertMessage}
                 />
               </Col>
               <Col>

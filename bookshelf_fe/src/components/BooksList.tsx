@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Col, Dropdown, Pagination, Row } from "react-bootstrap";
+import { Alert, Button, Col, Dropdown, Pagination, Row } from "react-bootstrap";
 import { GetBooksList, GetFilteredBookList, GetSortedBookList } from "../app/services/BooksApi";
 import BookCard from "./BooksComponent/BooksCard";
 import AddBookModal from "./BooksComponent/AddBookModal";
@@ -25,7 +25,7 @@ const BooksList: React.FC = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [alertMessage, setAlertMessage] = useState(false);
+  const [alertMessage, setAlertMessage] = useState<string | undefined>('');
 
   const [books, setBooks] = useState<Book[] | undefined>();
 
@@ -63,17 +63,21 @@ const BooksList: React.FC = () => {
   const handleLogout = () =>{
     contextValue?.setToken('')
   }
-
-  useEffect(() => {
+  const fetchBooks = () => {
     GetBooksList()
-      .then((response) => {
-        console.log("api response***", response?.data?.data);
-        setBooks(response?.data?.data);
-      })
-      .catch((error) => {
-        console.log("api error***", error);
-      });
-  }, []);
+    .then((response) => {
+      console.log("api response***", response?.data?.data);
+      setBooks(response?.data?.data);
+    })
+    .catch((error) => {
+      console.log("api error***", error);
+  });
+
+  }
+  useEffect(() => {
+    console.log("alertMessage(***", alertMessage)
+    fetchBooks();
+  }, [alertMessage]);
 
   return (
     <>
@@ -95,6 +99,7 @@ const BooksList: React.FC = () => {
           show={show}
           handleClose={handleClose}
           handleShow={handleShow}
+          setAlertMessage={setAlertMessage}
         />
         <Dropdown>
           <Dropdown.Toggle variant="success" id="dropdown-basic">
@@ -121,7 +126,13 @@ const BooksList: React.FC = () => {
         </Dropdown>
 
       </div>
-
+      {alertMessage ? (
+        <>
+          <Alert variant="success" className="py-2">
+            {alertMessage}
+          </Alert>
+        </>
+      ):null}
       <Row>
         {currentBooks && currentBooks.length > 0 ? (
           currentBooks.map((item, index) => (
@@ -130,6 +141,7 @@ const BooksList: React.FC = () => {
               id={item.id}
               books={item}
               setBooks={setBooks}
+              setAlertMessage={setAlertMessage}
             />
           ))
         ) : (
