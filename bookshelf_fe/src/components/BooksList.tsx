@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Col, Dropdown, Pagination, Row } from "react-bootstrap";
 import { GetBooksList, GetFilteredBookList, GetSortedBookList } from "../app/services/BooksApi";
 import BookCard from "./BooksComponent/BooksCard";
 import AddBookModal from "./BooksComponent/AddBookModal";
+import { UserTokenContext } from "../App";
+import { useNavigate } from "react-router-dom";
 
 interface Book {
   id: number;
@@ -13,6 +15,13 @@ interface Book {
 }
 
 const BooksList: React.FC = () => {
+  const contextValue = useContext(UserTokenContext);
+  console.log("dashboard***", contextValue?.userToken);
+  const navigate = useNavigate();
+  if(!contextValue?.userToken){
+    navigate("/login");
+  }
+
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -51,6 +60,10 @@ const BooksList: React.FC = () => {
     });
   }
 
+  const handleLogout = () =>{
+    contextValue?.setToken('')
+  }
+
   useEffect(() => {
     GetBooksList()
       .then((response) => {
@@ -65,6 +78,15 @@ const BooksList: React.FC = () => {
   return (
     <>
       <h1>List of Books</h1>
+      <div className="d-flex justify-content-end mr-3">
+        <Button
+            className="text-muted px-0"
+            variant="link"
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
+      </div>
       <div className="d-flex justify-content-end mr-3">
         <Button variant="primary" onClick={handleShow}>
           Add Book

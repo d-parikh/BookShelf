@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Formik, Field, Form } from "formik";
 import { Form as BootstrapForm, Button, Alert, Toast } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../app/services/UserApi";
+import {UserTokenContext} from "../App";
 
 interface LoginFormValues {
   username: string;
@@ -13,6 +14,7 @@ interface LoginFormValues {
 }
 
 const Login: React.FC = () => {
+  const contextValue = useContext(UserTokenContext);
   const [submit, setSubmit] = useState<string | false>(false);
   const [error, setError] = useState<string | false>(false);
   const navigate = useNavigate();
@@ -31,8 +33,9 @@ const Login: React.FC = () => {
         console.log("api response***", response?.data?.message);
         setSubmit(response?.data?.message);
         localStorage.setItem("userToken", response?.data?.token);
+        contextValue?.setToken(response?.data?.token)
         setTimeout(() => {
-          navigate("/dashboard");
+          navigate("/list-books");
         }, 5000);
       })
       .catch((error) => {
