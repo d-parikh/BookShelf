@@ -24,12 +24,30 @@ class BookViewSet(ViewSet):
     """
         A simple view set for CRUD Announcements
     """
+    def get_default_book(self, books):
+        if not books:
+            # Create default books
+            default_books = [
+                {'title': 'The Three Muskeeters', 'author': 'Alexandre Dumas', 'publication_year': 2000, 'genre': 'Action and Adventure'},
+                {'title': 'Ninth House', 'author': 'Unknown', 'publication_year': 1960, 'genre': 'Fantasy'},
+                # Add more default books as needed
+            ]
+
+            for book_data in default_books:
+                Book.objects.create(**book_data)
+            return
+            
     def list(self, request):
         sort_by = request.query_params.get('sortby')
-
         queryset = Book.objects.all()
         print("queryset***", queryset)
+        books = Book.objects.all()
+        serializer = BookSerializer(books, many=True)
 
+        # Retrieve the book if no book present in Database
+        self.get_default_book(books)
+
+        # Sort book by Publication Year
         if sort_by == 'publication_year':
             queryset = queryset.order_by('publication_year')
 
