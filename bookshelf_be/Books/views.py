@@ -36,7 +36,7 @@ class BookViewSet(ViewSet):
             for book_data in default_books:
                 Book.objects.create(**book_data)
             return
-            
+
     def list(self, request):
         sort_by = request.query_params.get('sortby')
         queryset = Book.objects.all()
@@ -50,6 +50,10 @@ class BookViewSet(ViewSet):
         # Sort book by Publication Year
         if sort_by == 'publication_year':
             queryset = queryset.order_by('publication_year')
+        #filter books by genre        
+        genre = request.query_params.get('genre')
+        if genre:
+            queryset = queryset.filter(genre=genre)
 
         serializer = BookSerializer(queryset, many=True)
         return Response({"data": serializer.data}, status=HTTP_200_OK)

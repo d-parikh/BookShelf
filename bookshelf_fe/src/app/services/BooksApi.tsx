@@ -60,3 +60,16 @@ export const GetSortedBookList = async (sortby?: string): Promise<AxiosResponse>
     throw error;
   }
 };
+
+export const GetFilteredBookList = async (genre?: string): Promise<AxiosResponse> => {
+  try {
+    const response = await axios.get('http://127.0.0.1:8000/api/books/', {
+      params: {
+        genre: genre, // Optional parameter for sorting
+      },
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
