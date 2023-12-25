@@ -60,7 +60,7 @@ const EditBookModal: React.FC<EditBookModalProps> = ({ id, show, handleClose, ha
     onSubmit,
   });
 
-  const { values, setValues, handleChange, handleSubmit, errors, touched } = formik;
+  const { values, setValues, handleChange, handleSubmit, errors, touched, setFieldValue } = formik;
 
   useEffect(() => {
     if (show) {
@@ -139,7 +139,7 @@ const EditBookModal: React.FC<EditBookModalProps> = ({ id, show, handleClose, ha
                 {errors.publication_year}
               </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group className="mb-3" controlId="genre">
+            {/* <Form.Group className="mb-3" controlId="genre">
               <Form.Label>Genre</Form.Label>
               <Form.Control
                 type="text"
@@ -152,7 +152,20 @@ const EditBookModal: React.FC<EditBookModalProps> = ({ id, show, handleClose, ha
               <Form.Control.Feedback type="invalid">
                 {errors.genre}
               </Form.Control.Feedback>
-            </Form.Group>
+            </Form.Group> */}
+            <Form.Select aria-label="Default select example" name="genre"  // Add the name attribute for useFormik
+                value={values.genre}
+                onChange={(e) => setFieldValue('genre', e.target.value)}
+                isInvalid={touched.genre && !!errors.genre}>
+                <option>Select Genre</option>
+                <option value="Fantasy">Fantasy</option>
+                <option value="Horror">Horror</option>
+                <option value="Science and Fiction">Science and fiction</option>
+                <option value="Romance">Romance</option>
+                <option value="Comedy">Comedy</option>
+                <option value="Thriller">Thriller</option>
+                <option value="Adventure">Adventure</option>
+            </Form.Select>
             <Button variant="primary" type="submit">
               Update Book
             </Button>

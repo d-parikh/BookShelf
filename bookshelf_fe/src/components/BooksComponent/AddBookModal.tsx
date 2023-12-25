@@ -61,7 +61,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ show, handleClose, handleSh
     onSubmit,
   });
 
-  const { values, handleChange, handleSubmit, errors, touched } = formik;
+  const { values, handleChange, handleSubmit, errors, touched, setFieldValue } = formik;
 
   return (
     <>
@@ -122,20 +122,19 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ show, handleClose, handleSh
                 {errors.publication_year}
               </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group className="mb-3" controlId="genre">
-              <Form.Label>Genre</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter Genre"
-                name="genre"
+            <Form.Select aria-label="Default select example" name="genre"  // Add the name attribute for useFormik
                 value={values.genre}
-                onChange={handleChange}
-                isInvalid={touched.genre && !!errors.genre}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.genre}
-              </Form.Control.Feedback>
-            </Form.Group>
+                onChange={(e) => setFieldValue('genre', e.target.value)}
+                isInvalid={touched.genre && !!errors.genre}>
+                <option value="Fantasy">Fantasy</option>
+                <option value="Horror">Horror</option>
+                <option value="Science and Fiction">Science and fiction</option>
+                <option value="Romance">Romance</option>
+                <option value="Comedy">Comedy</option>
+                <option value="Thriller">Thriller</option>
+                <option value="Adventure">Adventure</option>
+            </Form.Select>
+
             <Button variant="primary" type="submit">
               Add Book
             </Button>
