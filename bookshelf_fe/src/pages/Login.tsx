@@ -75,6 +75,8 @@ const Login: React.FC = () => {
                 {({ isSubmitting }) => (
                   <Form className="shadow p-4 bg-white rounded">
                     <div className="h4 mb-2 text-center">Login</div>
+
+                    {/* Show the Alert Box for success and error */}
                     {
                       error ? (
                         <>

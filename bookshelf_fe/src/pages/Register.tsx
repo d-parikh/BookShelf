@@ -74,16 +74,24 @@ const Register: React.FC = () => {
                 {({ isSubmitting }) => (
                   <Form className="shadow p-4 bg-white rounded">
                     <div className="h4 mb-2 text-center">Create Account</div>
-                    {error && (
-                      <Alert variant="danger" className="py-2">
-                        {error}
-                      </Alert>
-                    )}
-                    {submit && (
-                      <Alert variant="success" className="py-2">
-                        {submit}
-                      </Alert>
-                    )}
+
+                    {/* Show the Alert Box for success and error */}
+                    {
+                      error ? (
+                        <>
+                          <Alert variant="danger" className="py-2">
+                            {error}
+                          </Alert>
+                        </>
+                      ): submit ?(
+                        <>
+                          <Alert variant="success" className="py-2">
+                            {submit}
+                          </Alert>
+                        </>
+                      ):null
+                    }
+
                     <Field
                       name="showError"
                       render={({ field }: any) =>
