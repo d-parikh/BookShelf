@@ -1,0 +1,56 @@
+
+.imageContainer{
+    background-color: aqua;
+    background-image: url('../../assets/backImage.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    /* position: relative; */
+}
+
+.overlayContainer{
+    background-color: black;
+    opacity: 0.7;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    /* position: relative; */
+
+}
+
+.overlayContent {
+    position: absolute;
+    opacity: 1; /* Adjust as needed */
+    color: #fff; /* Text color */
+    margin-left: 30px;
+}
+
+.imageQuote{
+    text-align: left;
+    font-style: italic;
+    font-size: 20px;
+}
+
+.imageHeader{
+    text-align: left;
+    font-size: 80px;
+}
+
+.textContainer{
+    background-color: #156475;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bigText{
+    font-size: 50px;
+    font-weight: 200;
+}

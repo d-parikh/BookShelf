@@ -16,6 +16,7 @@ interface EditBookModalProps {
 }
 
 const EditBookModal: React.FC<EditBookModalProps> = ({ id, show, handleClose, handleShow, setAlertMessage }) => {
+    console.log("handleClose*** edit**", handleClose)
   const [books, setBooks] = useState<any>(false);
   const [error, setError] = useState<string | boolean>(false);
 
@@ -71,8 +72,6 @@ const EditBookModal: React.FC<EditBookModalProps> = ({ id, show, handleClose, ha
           publication_year: response.data.data[0].publication_year,
           genre: response.data.data[0].genre,
         });
-
-        console.log("****", response);
       });
     }
   }, [show, id]);
@@ -80,8 +79,8 @@ const EditBookModal: React.FC<EditBookModalProps> = ({ id, show, handleClose, ha
   return (
     <>
       <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton className="border-width-0 pb-0">
-          <h3>Edit Book Details</h3>
+        <Modal.Header closeButton className="border-0 pb-0">
+          <h3 style={{color:"#489cb5"}}>Edit Book Details</h3>
         </Modal.Header>
         <Modal.Body>
           {formik.status && !formik.status.success ? (
@@ -134,34 +133,29 @@ const EditBookModal: React.FC<EditBookModalProps> = ({ id, show, handleClose, ha
                 {errors.publication_year}
               </Form.Control.Feedback>
             </Form.Group>
-            {/* <Form.Group className="mb-3" controlId="genre">
-              <Form.Label>Genre</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter Genre"
-                name="genre"
-                value={values.genre}
-                onChange={handleChange}
-                isInvalid={touched.genre && !!errors.genre}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.genre}
-              </Form.Control.Feedback>
-            </Form.Group> */}
-            <Form.Select aria-label="Default select example" name="genre"  // Add the name attribute for useFormik
-                value={values.genre}
-                onChange={(e) => setFieldValue('genre', e.target.value)}
-                isInvalid={touched.genre && !!errors.genre}>
-                <option>Select Genre</option>
-                <option value="Fantasy">Fantasy</option>
-                <option value="Horror">Horror</option>
-                <option value="Science and Fiction">Science and fiction</option>
-                <option value="Romance">Romance</option>
-                <option value="Comedy">Comedy</option>
-                <option value="Thriller">Thriller</option>
-                <option value="Adventure">Adventure</option>
-            </Form.Select>
-            <Button variant="primary" type="submit">
+            <Form.Group controlId="genre">
+                <Form.Label>Genre</Form.Label>
+                <Form.Select
+                    aria-label="Default select example"
+                    name="genre"
+                    value={values.genre}
+                    onChange={(e) => setFieldValue('genre', e.target.value)}
+                    isInvalid={touched.genre && !!errors.genre}
+                >
+                    <option value="" disabled>Select a genre</option>
+                    <option value="Fantasy">Fantasy</option>
+                    <option value="Horror">Horror</option>
+                    <option value="Science and Fiction">Science and fiction</option>
+                    <option value="Romance">Romance</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="Thriller">Thriller</option>
+                    <option value="Adventure">Adventure</option>
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">
+                    {errors.genre}
+                </Form.Control.Feedback>
+            </Form.Group>
+            <Button  type="submit" style={{backgroundColor: "#91cecf", borderWidth: 0, borderRadius:20, marginTop: 20}}>
               Update Book
             </Button>
           </Form>
