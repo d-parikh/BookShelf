@@ -6,7 +6,9 @@ import Header from '../../components/Header';
 const Home: React.FC = () => {
     return (
         <>
-            <Header linkColor='#ffffff'/>
+            <div style={{ position: "fixed", display: "flex", justifyContent: "flex-end", right: 40, top:30 }}>
+                <Header linkColor='#ffffff'/>
+            </div>
             <Row>
                 <Col className='p-0' lg={7}>
                     <div className='imageContainer' >

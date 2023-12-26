@@ -30,7 +30,7 @@ const BooksList: React.FC = () => {
   const [genre, setGenre] = useState<string | undefined>('');
 
   const [books, setBooks] = useState<Book[] | undefined>();
-  const booksPerPage = 2; // Adjust the number of books per page as needed
+  const booksPerPage = 3; // Adjust the number of books per page as needed
   const [currentPage, setCurrentPage] = useState(1);
   const indexOfLastBook = currentPage * booksPerPage;
   const indexOfFirstBook = indexOfLastBook - booksPerPage;
@@ -109,9 +109,11 @@ const BooksList: React.FC = () => {
   return (
     <>
     <div className="mx-5 my-4">
-      <div className="d-flex justify-content-space-between mb-4">
+      <div className="d-flex justify-content-between mb-4">
         <h1 className="d-flex justify-content-start">List of Books</h1>
-        <Header linkColor="#3b373a"/>
+        <div>
+          <Header linkColor="#3b373a"/>
+        </div>
       </div>
         <div className="d-flex justify-content-between mr-3">
           <div className="d-flex">
