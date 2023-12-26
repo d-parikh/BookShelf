@@ -1,20 +1,12 @@
-from rest_framework import generics
+from rest_framework import generics, authentication
 from .models import Book
 from .serializers import BookSerializer
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_204_NO_CONTENT
 from django.shortcuts import get_object_or_404, render
-
-class BookList(generics.ListCreateAPIView):
-    serializer_class = BookSerializer
-
-    def get_queryset(self):
-        queryset = Book.objects.all()
-        sort_by = self.request.query_params.get('sort', None)
-        if sort_by == 'publication_year':
-            queryset = queryset.order_by('publication_year')
-        return queryset
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication  # Import JWTAuthentication
 
 class BookDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
@@ -24,6 +16,9 @@ class BookViewSet(ViewSet):
     """
         A simple view set for CRUD Announcements
     """
+    authentication_classes = [JWTAuthentication, ]  # Use JWTAuthentication for authentication
+    permission_classes = [IsAuthenticated, ]
+
     def get_default_book(self, books):
         if not books:
             # Create default books

@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'Books',
     'corsheaders',
     'rest_framework',
-    'rest_framework.authtoken',
+    'rest_framework_simplejwt'
 ]
 
 MIDDLEWARE = [
@@ -57,7 +57,6 @@ MIDDLEWARE = [
     
     #....
     'corsheaders.middleware.CorsMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware'
 ]
 
 ROOT_URLCONF = 'bookshelf_be.urls'
@@ -141,9 +140,8 @@ AUTH_USER_MODEL = 'AuthUser.CustomUser'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-    # Other settings...
 }
 
 CORS_ALLOWED_ORIGINS = [

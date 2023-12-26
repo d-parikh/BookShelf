@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { DeleteBook } from "../../app/services/BooksApi";
+import { UserTokenContext } from "../../App";
 
 interface DeleteBookModalProps {
   id: number;
@@ -12,8 +13,10 @@ interface DeleteBookModalProps {
 }
 
 const DeleteBookModal: React.FC<DeleteBookModalProps> = ({ id, show, handleClose, handleShow, setAlertMessage }) => {
+    const contextValue = useContext(UserTokenContext);
+    const userToken = contextValue?.userToken;
     const handleDeleteBook = () => {
-        DeleteBook(id)
+        DeleteBook(userToken, id)
         .then((response) => {
           setAlertMessage("Book Deleted Successfully");
           handleClose();

@@ -4,7 +4,6 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Button, Container } from "react-bootstrap";
 import EditBookModal from "./BooksComponent/EditBookModal";
-import { DeleteBook } from "../app/services/BooksApi";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import DeleteBookModal from "./BooksComponent/DeleteBookModal";
 
@@ -25,23 +24,8 @@ const BookCard: React.FC<BookCardProps> = ({
   key,
   setAlertMessage
 }) => {
-
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  // const handleClose = () => setShowEditModal(false);
-  // const handleShow = () => setShowEditModal(true);
-
-  const handleDeleteBook = () => {
-    DeleteBook(id)
-    .then((response) => {
-      setBooks(response.data.data);
-      setAlertMessage("Book Deleted Successfully")
-    })
-    .catch((error) => {
-      console.log("api error***", error);
-    });
-  }
-
   return (
     <>
       <div>

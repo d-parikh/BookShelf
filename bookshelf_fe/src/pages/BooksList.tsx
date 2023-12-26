@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Alert, Button, Col, Dropdown, Pagination, Row } from "react-bootstrap";
+import { Alert, Button, Dropdown, Pagination, Spinner } from "react-bootstrap";
 import { GetBooksList, GetFilteredBookList, GetSortedBookList } from "../app/services/BooksApi";
 import BookCard from "../components/BooksCard";
 import AddBookModal from "../components/BooksComponent/AddBookModal";
@@ -18,15 +18,16 @@ interface Book {
 
 const BooksList: React.FC = () => {
   const contextValue = useContext(UserTokenContext);
+  const userToken = contextValue?.userToken;
   const navigate = useNavigate();
-  if(!contextValue?.userToken){
-    navigate("/login");
-  }
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [alertMessage, setAlertMessage] = useState<string | undefined>('');
+
+  const [loader, setLoader] = useState(false);
+  const [genre, setGenre] = useState<string | undefined>('');
 
   const [books, setBooks] = useState<Book[] | undefined>();
   const booksPerPage = 2; // Adjust the number of books per page as needed
@@ -38,32 +39,40 @@ const BooksList: React.FC = () => {
   const paginate = (pageNumber:number) => setCurrentPage(pageNumber);
 
   const handleSortBy = (sortby: string) =>{
-    GetSortedBookList(sortby)
+    setLoader(true);
+    GetSortedBookList(userToken, sortby)
     .then((response) => {
       setBooks(response?.data?.data);
+      setLoader(false);
     })
     .catch((error) => {
-      console.log("api error***", error);
+      setLoader(false);
     });
   }
 
   const handleFilter = (genre: string) =>{
-    GetFilteredBookList(genre)
+    setLoader(true);
+    setGenre(genre);
+    GetFilteredBookList(userToken, genre)
     .then((response) => {
       setBooks(response?.data?.data);
+      setLoader(false);
     })
     .catch((error) => {
-      console.log("api error***", error);
+      setLoader(false);
     });
   }
 
   const fetchBooks = () => {
-    GetBooksList()
+    setLoader(true);
+    GetBooksList(userToken)
     .then((response) => {
       setBooks(response?.data?.data);
+      setLoader(false);
+      console.log("api error***", response?.data?.data.length);
     })
     .catch((error) => {
-      console.log("api error***", error);
+      setLoader(false);
   });
   }
   const showAlert = (alertMessage: any) => {
@@ -73,12 +82,30 @@ const BooksList: React.FC = () => {
       setAlertMessage('');
     }, 3000);
   };
-
+  const CustomToggle = React.forwardRef<HTMLButtonElement, { children: React.ReactNode; onClick: React.MouseEventHandler<HTMLButtonElement> }>(
+    ({ children, onClick }, ref) => (
+      <Button
+        href="#"
+        ref={ref}
+        onClick={(e) => {
+          e.preventDefault();
+          onClick(e);
+        }}
+        style={{ textDecoration: 'none', backgroundColor: "#062236", borderWidth:0}}  // Remove the underline if needed
+      >
+        {children}
+      </Button>
+    )
+  );
+      
   useEffect(() => {
-    fetchBooks();
     showAlert(alertMessage)
+    fetchBooks();
+    if(!contextValue?.userToken){
+      navigate("/login");
+    }
   }, [alertMessage]);
-
+  
   return (
     <>
     <div className="mx-5 my-4">
@@ -88,8 +115,8 @@ const BooksList: React.FC = () => {
       </div>
         <div className="d-flex justify-content-between mr-3">
           <div className="d-flex">
-            <Dropdown className="mx-3">
-              <Dropdown.Toggle variant="success" id="dropdown-basic" style={{backgroundColor: "#062236", borderWidth: 0}}>
+            <Dropdown className="mx-3" >
+              <Dropdown.Toggle variant="success" id="dropdown-basic" style={{backgroundColor: "#062236", borderWidth: 0}} >
                 Sort By
               </Dropdown.Toggle>
               <Dropdown.Menu>
@@ -97,8 +124,8 @@ const BooksList: React.FC = () => {
               </Dropdown.Menu>
             </Dropdown>
             <Dropdown>
-              <Dropdown.Toggle variant="primary" id="dropdown-basic" style={{backgroundColor: "#062236", borderWidth: 0}}>
-                Filter
+              <Dropdown.Toggle as={CustomToggle} variant="primary" id="dropdown-basic">
+                Filter <FaFilter />
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 <Dropdown.Item onClick={() => handleFilter('Fantasy')}>Fantasy</Dropdown.Item>
@@ -122,7 +149,6 @@ const BooksList: React.FC = () => {
           />
         </div>
 
-
         <div className="d-flex justify-content-center my-4">
           {alertMessage ? (
             <>
@@ -143,9 +169,11 @@ const BooksList: React.FC = () => {
               setAlertMessage={setAlertMessage}
             />
           ))
-        ) : (
+        ) : loader?(
+          <Spinner animation="border" />
+        ): (
           <div style={{height: "100vh"}}>
-            <h3 style={{color:"red"}}>No books available</h3>
+            <h3 style={{color:"red"}}>No books available for {genre} </h3>
           </div>
         )}
 

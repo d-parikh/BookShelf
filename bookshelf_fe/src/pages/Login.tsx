@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Formik, Field, Form } from "formik";
-import { Form as BootstrapForm, Button, Alert, Toast, Col, Row } from "react-bootstrap";
+import { Form as BootstrapForm, Button, Alert, Col, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../app/services/UserApi";
 import {UserTokenContext} from "../App";
@@ -32,20 +32,15 @@ const Login: React.FC = () => {
     loginUser(formData)
       .then((response) => {
         setSubmit(response?.data?.message);
-        localStorage.setItem("userToken", response?.data?.token);
-        contextValue?.setToken(response?.data?.token)
+        setError(false);
+        contextValue?.setToken(response?.data?.access)
         setTimeout(() => {
           navigate("/");
         }, 3000);
       })
       .catch((error) => {
-        setError(error?.response?.data);
+        setError(error.response.data.error);
       });
-
-    if (values.username !== "admin" || values.password !== "admin") {
-      setFieldError("showError", true);
-    }
-
     setSubmitting(false);
   };
 
@@ -80,16 +75,21 @@ const Login: React.FC = () => {
                 {({ isSubmitting }) => (
                   <Form className="shadow p-4 bg-white rounded">
                     <div className="h4 mb-2 text-center">Login</div>
-                    {error && (
-                      <Alert variant="danger" className="py-2">
-                        {error}
-                      </Alert>
-                    )}
-                    {submit && (
-                      <Alert variant="success" className="py-2">
-                        {submit}
-                      </Alert>
-                    )}
+                    {
+                      error ? (
+                        <>
+                          <Alert variant="danger" className="py-2">
+                            {error}
+                          </Alert>
+                        </>
+                      ): submit ?(
+                        <>
+                          <Alert variant="success" className="py-2">
+                            {submit}
+                          </Alert>
+                        </>
+                      ):null
+                    }
                     <Field name="showError" render={({ field }: any) => (
                       field.value && (
                         <Alert

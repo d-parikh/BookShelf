@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from .models import CustomUser
 from django.contrib.auth.hashers import check_password
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class RegisterUserView(generics.CreateAPIView):
     queryset = get_user_model().objects.all()
@@ -30,7 +31,6 @@ class RegisterUserView(generics.CreateAPIView):
 class LoginUserView(generics.CreateAPIView):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
-
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
@@ -44,9 +44,13 @@ class LoginUserView(generics.CreateAPIView):
         user = get_user_model().objects.filter(email=email).first()
 
         if user is not None and check_password(password, user.password):
-            # Password matches, generate or retrieve token
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key, 'message': 'Login successful!'}, status=status.HTTP_200_OK)
+            # Password matches, generate JWT token
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'message': 'Login successful!'
+            }, status=status.HTTP_200_OK)
         else:
             # User with the specified email doesn't exist or password doesn't match
             return Response({'error': 'Invalid email or password'}, status=status.HTTP_401_UNAUTHORIZED)

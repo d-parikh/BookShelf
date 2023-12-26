@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Button from 'react-bootstrap/Button';
@@ -6,6 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { Alert } from 'react-bootstrap';
 import { AddBook } from '../../app/services/BooksApi';
+import { UserTokenContext } from '../../App';
 
 interface AddBookModalProps {
   show: boolean;
@@ -15,6 +16,8 @@ interface AddBookModalProps {
 }
 
 const AddBookModal: React.FC<AddBookModalProps> = ({ setAlertMessage, show, handleClose, handleShow }) => {
+  const contextValue = useContext(UserTokenContext);
+  const userToken = contextValue?.userToken;
   const [error, setError] = useState<string | null>(null);
   const initialValues = {
     title: '',
@@ -37,7 +40,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ setAlertMessage, show, hand
     formData.append("publication_year", values?.publication_year);
     formData.append("genre", values?.genre);
 
-    AddBook(formData)
+    AddBook(userToken, formData)
     .then((response) => {
       setStatus({ success: true });
       localStorage.setItem("userToken", response?.data?.token);

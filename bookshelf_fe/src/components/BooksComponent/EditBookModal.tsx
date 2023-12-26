@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "react-bootstrap/Button";
@@ -6,6 +6,7 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import { Alert } from "react-bootstrap";
 import { EditBook, GetBook } from "../../app/services/BooksApi";
+import { UserTokenContext } from "../../App";
 
 interface EditBookModalProps {
   id: number;
@@ -16,7 +17,8 @@ interface EditBookModalProps {
 }
 
 const EditBookModal: React.FC<EditBookModalProps> = ({ id, show, handleClose, handleShow, setAlertMessage }) => {
-    console.log("handleClose*** edit**", handleClose)
+  const contextValue = useContext(UserTokenContext);
+  const userToken = contextValue?.userToken;
   const [books, setBooks] = useState<any>(false);
   const [error, setError] = useState<string | boolean>(false);
 
@@ -40,15 +42,13 @@ const EditBookModal: React.FC<EditBookModalProps> = ({ id, show, handleClose, ha
     formData.append("author", values?.author);
     formData.append("publication_year", values?.publication_year);
     formData.append("genre", values?.genre);
-    EditBook(id, formData)
+    EditBook(userToken, id, formData)
       .then((response) => {
-        console.log("API response:", response.data.data);
         setAlertMessage("Book edited successfully")
         resetForm();
         handleClose();
       })
       .catch((error) => {
-        console.log("API error:", error.response?.data?.message);
         setError(error.response?.data?.message || true);
         setStatus({ success: false });
       });
@@ -64,7 +64,7 @@ const EditBookModal: React.FC<EditBookModalProps> = ({ id, show, handleClose, ha
 
   useEffect(() => {
     if (show) {
-      GetBook(id).then((response) => {
+      GetBook(userToken, id).then((response) => {
         setBooks(response.data.data[0]);
         setValues({
           title: response.data.data[0].title,
