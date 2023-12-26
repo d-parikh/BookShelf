@@ -20,3 +20,10 @@ Django:
     npm start
 
 
+# Setup Database
+    CREATE DATABASE bookapp;
+    USE bookapp;
+    CREATE USER 'dhara'@'localhost' IDENTIFIED WITH mysql_native_password BY 'dhara123';
+    GRANT ALL ON blog_data.* TO 'dhara'@'localhost';
+    FLUSH PRIVILEGES;
+
